@@ -1,11 +1,12 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
+
 from app.config import APP_NAME, APP_VERSION
-from app.schemas import TransactionInput, PredictionResponse
+from app.schemas import PredictionResponse, TransactionInput
 from app.fraud_service import score_transaction
 
 app = FastAPI(
     title=APP_NAME,
-    version=APP_VERSION
+    version=APP_VERSION,
 )
 
 
@@ -16,5 +17,11 @@ def health_check():
 
 @app.post("/predict", response_model=PredictionResponse)
 def predict(transaction: TransactionInput):
-    result = score_transaction(transaction.dict())
-    return result
+    try:
+        return score_transaction(transaction.model_dump())
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except FileNotFoundError as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Prediction failed: {str(e)}")

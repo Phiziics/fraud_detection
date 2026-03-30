@@ -31,8 +31,8 @@ class TransactionInput(BaseModel):
     V27: float
     V28: float
     Amount_log: float = Field(..., description="Log-transformed transaction amount")
-    Time_sin: float = Field(..., description="Cyclical sine encoding of transaction time")
-    Time_cos: float = Field(..., description="Cyclical cosine encoding of transaction time")
+    Time_sin: float = Field(..., description="Sine encoding of cyclical time")
+    Time_cos: float = Field(..., description="Cosine encoding of cyclical time")
 
 
 class PredictionResponse(BaseModel):
@@ -40,3 +40,4 @@ class PredictionResponse(BaseModel):
     threshold_used: float
     is_fraud: bool
     risk_label: str
+    model_version: str

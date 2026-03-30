@@ -1,7 +1,7 @@
 from app.config import FRAUD_THRESHOLD
 from app.fraud_model import FraudModel
 
-model = FraudModel()
+fraud_model = FraudModel()
 
 
 def get_risk_label(probability: float) -> str:
@@ -13,7 +13,7 @@ def get_risk_label(probability: float) -> str:
 
 
 def score_transaction(transaction_data: dict) -> dict:
-    fraud_probability = model.predict_proba(transaction_data)
+    fraud_probability = fraud_model.predict_proba(transaction_data)
     is_fraud = fraud_probability >= FRAUD_THRESHOLD
     risk_label = get_risk_label(fraud_probability)
 
@@ -22,4 +22,5 @@ def score_transaction(transaction_data: dict) -> dict:
         "threshold_used": FRAUD_THRESHOLD,
         "is_fraud": is_fraud,
         "risk_label": risk_label,
+        "model_version": fraud_model.version,
     }
